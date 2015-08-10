@@ -188,7 +188,7 @@ public class MCTSNode {
 					+ PersistentStorage.K
 					* Math.sqrt(Math.log(nVisits + 1)
 							/ (children[i].nVisits + MCTSNode.epsilon))
-					+ MCTSNode.m_rnd.nextDouble() * MCTSNode.epsilon;
+							+ MCTSNode.m_rnd.nextDouble() * MCTSNode.epsilon;
 
 			// small sampleRandom numbers: break ties in unexpanded nodes
 			if (uctValue > bestValue && !children[i].isLoseState()) {
@@ -199,8 +199,8 @@ public class MCTSNode {
 		if (selected == -1 || children[selected].isLoseState()) {
 			if (Agent.isVerbose) {
 				System.out
-						.println("MCTS::##### Oh crap.  Death awaits with choice "
-								+ selected + ".");
+				.println("MCTS::##### Oh crap.  Death awaits with choice "
+						+ selected + ".");
 			}
 			selected = 0;
 		}
@@ -260,7 +260,7 @@ public class MCTSNode {
 
 		// int thisDepth = this.m_depth;
 		int thisDepth = 0; // here we guarantee "ROLLOUT_DEPTH" more rollout
-							// after MCTS/expand is finished
+		// after MCTS/expand is finished
 		double previousScore;
 		// rollout with random actions for "ROLLOUT_DEPTH" times
 		while (!finishRollout(rollerState, thisDepth)) {
@@ -273,10 +273,16 @@ public class MCTSNode {
 			thisDepth++;
 		}
 
-		// get current position and reward at that position
-		double explRew = PersistentStorage.rewMap
-				.getRewardAtWorldPosition(rollerState.getAvatarPosition());
+		// update our ItypeAttractivity
+		PersistentStorage.iTypeAttractivity.updateAttraction(rollerState,
+				PersistentStorage.startingReward);
 
+		// get current position and reward at that position
+		double explRew = PersistentStorage.rewMap.getRewardAtWorldPosition(rollerState.getAvatarPosition());
+		explRew += getNewExplITypeReward(rollerState);
+		
+//		System.out.println(rollerState.getAvatarPosition().x  + "   "+rollerState.getAvatarPosition().y);
+//		System.out.println(explRew);
 		// use a fraction of "explRew" as an additional reward (Not given by the
 		// Gamestats)
 		double additionalRew = explRew / 2;
@@ -311,6 +317,52 @@ public class MCTSNode {
 		return normDelta;
 	}
 
+	public double getNewExplITypeReward(StateObservation state ){
+		double totRew = 0;
+
+		Vector2d pos = state.getAvatarPosition();
+		double maxDist = Math.sqrt(Math.pow(PersistentStorage.rewMap.getDimension().height,2)  +  Math.pow(PersistentStorage.rewMap.getDimension().height,2) );
+				
+		
+		int count1 = 0;
+		ArrayList<Observation>[] npcPositions = null;
+		npcPositions = state.getNPCPositions(pos);
+		if (npcPositions != null) {
+			for (ArrayList<Observation> npcs : npcPositions) {
+				if (npcs.size() > 0) {
+					for(int i = 0; i< npcs.size(); i++){
+					Vector2d npcPos = npcs.get(i).position;
+					double npcAttractionValue = PersistentStorage.iTypeAttractivity
+							.get(npcs.get(0).itype);
+//					double dist = Math.sqrt(Math.pow(pos.x-npcPos.x,2) + Math.pow(pos.x-npcPos.x,2))/maxDist;
+					double dist = Math.sqrt(Math.abs(pos.x-npcPos.x)) + Math.sqrt(Math.abs(pos.x-npcPos.x))/maxDist;
+					totRew += npcAttractionValue/(dist+1);
+					count1++;
+					}
+				}
+			}
+		}
+		
+		ArrayList<Observation>[] resPos = null;
+		resPos = state.getResourcesPositions(pos);
+		if (resPos != null) {
+			for (ArrayList<Observation> res : resPos) {
+				if (res.size() > 0) {
+					for(int i = 0; i< res.size(); i++){
+					Vector2d resPosition = res.get(i).position;
+					double npcAttractionValue = PersistentStorage.iTypeAttractivity
+							.get(res.get(0).itype);
+					double dist = Math.sqrt(Math.abs(pos.x-resPosition.x)) + Math.sqrt(Math.abs(pos.x-resPosition.x))/maxDist;
+					totRew += npcAttractionValue/(dist+1);
+					count1++;
+				}
+				}
+			}
+		}
+
+		return totRew/count1;
+	}
+
 	public double value(StateObservation a_gameState) {
 
 		boolean gameOver = a_gameState.isGameOver();
@@ -330,8 +382,9 @@ public class MCTSNode {
 	}
 
 	public boolean finishRollout(StateObservation rollerState, int depth) {
-		if (depth >= PersistentStorage.ROLLOUT_DEPTH) // rollout end condition
-														// occurs
+
+		if (depth  >= PersistentStorage.ROLLOUT_DEPTH) // rollout end condition
+			// occurs
 			// "ROLLOUT_DEPTH" after the
 			// MCTS/expand is finished
 			return true;
@@ -436,50 +489,52 @@ public class MCTSNode {
 	}
 
 	public boolean isDeadEnd(int max_depth, boolean fear_unknown) {
-		MCTSNode cur = this;
-		boolean allDeaths = true;
-
-		// Base case
-		if (max_depth == 0 || this.isLoseState()
-				|| this.stateType == StateType.WIN) {
-			return this.isLoseState();
-		} else {
-			for (int i = 0; allDeaths && i < cur.children.length; i++) {
-				if (cur.children[i] != null) {
-					allDeaths = allDeaths
-							&& cur.children[i].isDeadEnd(max_depth - 1,
-									fear_unknown);
-				} else {
-					if (!fear_unknown) {
-						// Well, there's an unknown path, and we're not worried
-						// - so let's guess it isn't a dead end!
-						return false;
-					}
-				}
-			}
-			// Let the callers know if there is only death this way
-			return allDeaths;
-		}
+		return false;
+//		MCTSNode cur = this;
+//		boolean allDeaths = true;
+//
+//		// Base case
+//		if (max_depth == 0 || this.isLoseState()
+//				|| this.stateType == StateType.WIN) {
+//			return this.isLoseState();
+//		} else {
+//			for (int i = 0; allDeaths && i < cur.children.length; i++) {
+//				if (cur.children[i] != null) {
+//					allDeaths = allDeaths
+//							&& cur.children[i].isDeadEnd(max_depth - 1,
+//									fear_unknown);
+//				} else {
+//					if (fear_unknown) {
+//						// Well, there's an unknown path, and we're not worried
+//						// - so let's guess it isn't a dead end!
+//						return false;
+//					}
+//				}
+//			}
+//			// Let the callers know if there is only death this way
+//			return allDeaths;
+//		}
 	}
 
 	public boolean isLoseState() {
-		if (this.stateType == StateType.UNCACHED) {
-			boolean gameOver = this.state.isGameOver();
-			Types.WINNER win = this.state.getGameWinner();
-			if (gameOver && win == Types.WINNER.PLAYER_LOSES) {
-				this.stateType = StateType.LOSE;
-				return true;
-			} else {
-				if (win == Types.WINNER.PLAYER_WINS) {
-					this.stateType = StateType.WIN;
-				} else {
-					this.stateType = StateType.NORMAL;
-				}
-				return false;
-			}
-		} else {
-			return this.stateType == StateType.LOSE;
-		}
+		return false;
+//		if (this.stateType == StateType.UNCACHED) {
+//			boolean gameOver = this.state.isGameOver();
+//			Types.WINNER win = this.state.getGameWinner();
+//			if (gameOver && win == Types.WINNER.PLAYER_LOSES) {
+//				this.stateType = StateType.LOSE;
+//				return true;
+//			} else {
+//				if (win == Types.WINNER.PLAYER_WINS) {
+//					this.stateType = StateType.WIN;
+//				} else {
+//					this.stateType = StateType.NORMAL;
+//				}
+//				return false;
+//			}
+//		} else {
+//			return this.stateType == StateType.LOSE;
+//		}
 	}
 
 	public boolean notFullyExpanded() {
@@ -540,7 +595,7 @@ public class MCTSNode {
 										if ((trappedByImmovables[0].get(0).sqDist - blockSquare) < 1
 												&& (trappedByImmovables[0]
 														.get(1).sqDist - blockSquare) < 1
-												&& (trappedByMovables[0].get(1).sqDist - blockSquare) < 1) {
+														&& (trappedByMovables[0].get(1).sqDist - blockSquare) < 1) {
 											isTrapped++;
 										}
 									}

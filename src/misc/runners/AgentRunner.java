@@ -11,7 +11,7 @@ public class AgentRunner {
 		
 		// GamesTraining2014
 //		config.addGameLevel(RunConfig.GamesTraining2014.ALIENS,new int[] {1,2,3,4} );
-//		config.addGameLevel(RunConfig.GamesTraining2014.BOULDERDASH,new int[] {1,2,3,4} );
+		config.addGameLevel(RunConfig.GamesTraining2014.BOULDERDASH,new int[] {1,2,3,4} );
 //		config.addGameLevel(RunConfig.GamesTraining2014.BUTTERFLIES,new int[] {1,2,3,4} );
 //		config.addGameLevel(RunConfig.GamesTraining2014.CHASE,new int[] {1,2,3,4} );
 //		config.addGameLevel(RunConfig.GamesTraining2014.FROGS,new int[] {1,2,3,4} );
@@ -69,11 +69,11 @@ public class AgentRunner {
 		// three lines and at least the lowest two.)
 		// RunConfig runconfig = RunConfig.getRunAllEasyLevelsRunConfig();
 		// RunConfig runconfig = RunConfig.getRunAllHardLevelsRunConfig();
-		 RunConfig runconfig = RunConfig.getRunAllGameLevelsRunConfig();
+		 /*RunConfig runconfig = RunConfig.getRunAllGameLevelsRunConfig();
 		 runconfig.setController(controller);
 		 runconfig.setRepetitions(5);
 		 runconfig.setCalculateStatistics(true);
-		 GameRunner.runGames(runconfig);
+		 GameRunner.runGames(runconfig);*/
 
 		// #############
 		// == Replay a game
