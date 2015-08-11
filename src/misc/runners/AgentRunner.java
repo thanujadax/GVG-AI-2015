@@ -11,8 +11,8 @@ public class AgentRunner {
 		
 		// GamesTraining2014
 //		config.addGameLevel(RunConfig.GamesTraining2014.ALIENS,new int[] {1,2,3,4} );
-		config.addGameLevel(RunConfig.GamesTraining2014.BOULDERDASH,new int[] {1,2,3,4} );
-//		config.addGameLevel(RunConfig.GamesTraining2014.BUTTERFLIES,new int[] {1,2,3,4} );
+//		config.addGameLevel(RunConfig.GamesTraining2014.BOULDERDASH,new int[] {1,2,3,4} );
+		config.addGameLevel(RunConfig.GamesTraining2014.BUTTERFLIES,new int[] {1,2,3,4} );
 //		config.addGameLevel(RunConfig.GamesTraining2014.CHASE,new int[] {1,2,3,4} );
 //		config.addGameLevel(RunConfig.GamesTraining2014.FROGS,new int[] {1,2,3,4} );
 //		config.addGameLevel(RunConfig.GamesTraining2014.MISSILECOMMAND,new int[] {1,2,3,4} );

@@ -165,21 +165,23 @@ public class MCTSAgent extends GameAgent {
 			if (npcPositions != null) {
 				for (ArrayList<Observation> npcs : npcPositions) {
 					if (npcs.size() > 0) {
-						Vector2d npcPos = npcs.get(0).position;
-						try {
-							npcAttractionValue = PersistentStorage.iTypeAttractivity
-									.get(npcs.get(0).itype);
-						} catch (java.lang.NullPointerException e) {
-							PersistentStorage.iTypeAttractivity
-									.putNewUniqueItype(npcs.get(0));
-							npcAttractionValue = PersistentStorage.iTypeAttractivity
-									.get(npcs.get(0).itype);
-						}
-						if (Math.abs(PersistentStorage.rewMap
-								.getRewardAtWorldPosition(npcPos)) < 1) {
-							PersistentStorage.rewMap
-									.incrementRewardAtWorldPosition(npcPos,
-											npcAttractionValue * 0.02);
+						for(int i = 0; i< npcs.size(); i++){
+							Vector2d npcPos = npcs.get(i).position;
+							try {
+								npcAttractionValue = PersistentStorage.iTypeAttractivity
+										.get(npcs.get(i).itype);
+							} catch (java.lang.NullPointerException e) {
+								PersistentStorage.iTypeAttractivity
+										.putNewUniqueItype(npcs.get(i));
+								npcAttractionValue = PersistentStorage.iTypeAttractivity
+										.get(npcs.get(i).itype);
+							}
+							if (Math.abs(PersistentStorage.rewMap
+									.getRewardAtWorldPosition(npcPos)) < 1) {
+								PersistentStorage.rewMap
+										.incrementRewardAtWorldPosition(npcPos,
+												npcAttractionValue * 0.02);
+							}
 						}
 					}
 				}

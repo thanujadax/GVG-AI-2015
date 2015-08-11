@@ -331,13 +331,13 @@ public class MCTSNode {
 			for (ArrayList<Observation> npcs : npcPositions) {
 				if (npcs.size() > 0) {
 					for(int i = 0; i< npcs.size(); i++){
-					Vector2d npcPos = npcs.get(i).position;
-					double npcAttractionValue = PersistentStorage.iTypeAttractivity
-							.get(npcs.get(i).itype);
-//					double dist = Math.sqrt(Math.pow(pos.x-npcPos.x,2) + Math.pow(pos.x-npcPos.x,2))/maxDist;
-					double dist = Math.sqrt(Math.abs(pos.x-npcPos.x)) + Math.sqrt(Math.abs(pos.x-npcPos.x))/maxDist;
-					totRew += npcAttractionValue/(dist+1);
-					count1++;
+						Vector2d npcPos = npcs.get(i).position;
+						double npcAttractionValue = PersistentStorage.iTypeAttractivity
+								.get(npcs.get(i).itype);
+	//					double dist = Math.sqrt(Math.pow(pos.x-npcPos.x,2) + Math.pow(pos.x-npcPos.x,2))/maxDist;
+						double dist = Math.sqrt(Math.abs(pos.x-npcPos.x)) + Math.sqrt(Math.abs(pos.x-npcPos.x))/maxDist;
+						totRew += npcAttractionValue/(dist+1);
+						count1++;
 					}
 				}
 			}
