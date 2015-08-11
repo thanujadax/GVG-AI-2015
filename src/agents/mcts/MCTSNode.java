@@ -333,7 +333,7 @@ public class MCTSNode {
 					for(int i = 0; i< npcs.size(); i++){
 					Vector2d npcPos = npcs.get(i).position;
 					double npcAttractionValue = PersistentStorage.iTypeAttractivity
-							.get(npcs.get(0).itype);
+							.get(npcs.get(i).itype);
 //					double dist = Math.sqrt(Math.pow(pos.x-npcPos.x,2) + Math.pow(pos.x-npcPos.x,2))/maxDist;
 					double dist = Math.sqrt(Math.abs(pos.x-npcPos.x)) + Math.sqrt(Math.abs(pos.x-npcPos.x))/maxDist;
 					totRew += npcAttractionValue/(dist+1);
@@ -351,7 +351,7 @@ public class MCTSNode {
 					for(int i = 0; i< res.size(); i++){
 					Vector2d resPosition = res.get(i).position;
 					double npcAttractionValue = PersistentStorage.iTypeAttractivity
-							.get(res.get(0).itype);
+							.get(res.get(i).itype);
 					double dist = Math.sqrt(Math.abs(pos.x-resPosition.x)) + Math.sqrt(Math.abs(pos.x-resPosition.x))/maxDist;
 					totRew += npcAttractionValue/(dist+1);
 					count1++;
