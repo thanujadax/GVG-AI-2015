@@ -139,7 +139,7 @@ public class MCTSAgent extends GameAgent {
 		PersistentStorage.rewMap.incrementAll(0.001);
 		PersistentStorage.rewMap.setRewardAtWorldPosition(avatarPos, -0.3);
 
-		// rewMap.print();
+		PersistentStorage.rewMap.print();
 
 		// Heuristic: Punish the exploration area where enemies have been
 		// and reward it if the enemies are attractive
